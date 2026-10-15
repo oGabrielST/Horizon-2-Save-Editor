@@ -1,4 +1,4 @@
-"""Build the standalone Windows launcher using PyInstaller (development only)."""
+"""Build the native Windows editor using PyInstaller (development only)."""
 from pathlib import Path
 import subprocess
 import sys

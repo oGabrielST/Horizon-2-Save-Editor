@@ -35,6 +35,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           npm test
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m unittest discover -s tests -p test_native.py -v
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Build and verify desktop application
         shell: pwsh
         run: |
@@ -46,7 +48,7 @@ jobs:
           $test = Start-Process -FilePath '.\dist\Horizon 2 Save Editor.exe' -ArgumentList @('--self-test', "`"$report`"") -Wait -PassThru -WindowStyle Hidden
           if ($test.ExitCode -ne 0) { throw 'Executable self-test failed.' }
           $result = Get-Content -LiteralPath $report -Raw | ConvertFrom-Json
-          if (-not $result.ok -or -not $result.frozen) { throw 'Invalid executable test report.' }
+          if (-not $result.ok -or -not $result.frozen -or -not $result.native_editor -or $result.browser_required) { throw 'Invalid executable test report.' }
           python package_release.py
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
       - name: Publish release downloads

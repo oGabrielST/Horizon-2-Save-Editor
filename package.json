@@ -1,6 +1,6 @@
 {
   "name": "fh2-save-studio",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "description": "Local Azimuth FH2 save editor; gameplay changes remain experimental",
   "scripts": {

@@ -1,29 +1,34 @@
-# Horizon 2 Save Editor v0.3.0
+# Horizon 2 Save Editor v0.4.0
 
-Manage Forza Horizon 2 Azimuth save backups through a portable Windows launcher and a local browser interface.
+A standalone native Windows editor. Profile, garage, progression and story tools run directly inside the application window, with no browser or local web server.
 
 ## Download
 
-- **Horizon.2.Save.Editor.exe** — recommended for Windows. No installer or Python required. Open it and click **Open Save Editor**.
-- **Horizon.2.Save.Editor.Source.zip** — Python launcher, browser assets and source. Extract the entire package and run `python horizon_editor.py` with Python 3.10+ and Tkinter.
+- **Horizon.2.Save.Editor.exe** — portable Windows app. No installer or Python required.
+- **Horizon.2.Save.Editor.Source.zip** — native Python app and complete source. Extract it and run `python horizon_editor.py` with Python 3.12+ including Tkinter and SQLite serialization support; tested with Python 3.14.
 - **SHA256SUMS.txt** — checksums of the release downloads.
 
 ## Included
 
-- Profile editing for XP, credits, wheelspins and available skill tokens.
-- A garage catalog with 334 eligible stock models, car replacement, duplication and active-car selection.
+- Native folder selection, revision selection and four editing tabs.
+- XP, credits, wheelspins and available skill tokens. Direct level editing remains disabled.
+- Searchable catalog with 334 eligible stock models; add, replace, duplicate and select an active car.
 - Perk unlocks and experimental event, map, championship-history and story tools.
-- Backup integrity checks, atomic action rollback and ZIP export with updated manifests.
-- A desktop launch menu and usage instructions.
-
-Direct level editing is disabled; XP editing preserves the stored level field. Car editing, XP and perks have been reported working by the user. Other progression features still await in-game testing, and not every car or garage action has been individually verified.
+- Python backend with manifest/hash validation, SQLite integrity checks, action rollback and atomic ZIP export.
+- Source backups remain unchanged; export outside the source folder.
+- Prompts before discarding unexported changes, and file reads/writes on a background worker.
 
 ## Quick start
 
-1. Launch the app and select the complete, extracted `player-1` backup folder.
-2. Make your changes and click **Export edited copy (.zip)**.
-3. Close the game and Azimuth, and back up the active save folder.
-4. Extract the ZIP and replace `data/titles/1A96545B/saves/player-1` with the exported folder.
-5. Test in-game, save, exit and reload. Restore your backup if needed.
+1. Launch the app and click **Open backup folder**.
+2. Select the complete, extracted `player-1` backup folder.
+3. Prepare changes, then click **Export edited copy (.zip)**.
+4. Close the game and Azimuth, and back up the active save.
+5. Extract the ZIP and replace `data/titles/1A96545B/saves/player-1` with the exported folder.
+6. Test in-game, save, exit and reload. Restore your backup if needed.
 
-See the repository README for the full guide and limitations. This release does not claim full-campaign completion or support for encrypted console saves. The Windows executable is unsigned.
+## Validation and limits
+
+Native regression tests cover generated containers and a local compatible backup. The packaged executable is checked using its hidden native-widget self-test. XP edits preserve the stored level; other files and revisions remain unchanged.
+
+Car editing, XP and perks were reported working in the earlier browser editor. This release uses a new Python backend and still needs in-game confirmation. Other progression features remain experimental. There is no verified complete-everything action or support for encrypted console saves. The executable is unsigned.
