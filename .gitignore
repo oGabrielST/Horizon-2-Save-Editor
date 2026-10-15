@@ -1,0 +1,9 @@
+node_modules/
+__pycache__/
+build/
+dist/
+*.spec
+*.zip
+*.exe
+player-1/
+*-selftest.json

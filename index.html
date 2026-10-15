@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Edit Forza Horizon 2 Azimuth save backups locally. Manage XP, cars, perks and progression.">
+  <title>Horizon 2 Save Editor</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="studio.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar"><a class="brand" href="#"><span class="brand-mark">H2</span><span>Horizon 2 <span class="brand-light">Save Editor</span></span></a><span class="topbar-right">AZIMUTH · LOCAL</span></header>
+    <main>
+      <section class="intro"><div class="eyebrow">PROFILE / GARAGE / PROGRESS</div><h1>Horizon 2<br><span>Save Editor</span></h1><p>Edit your backup. Build your garage. Export a new copy.<br>Your save stays on your device.</p><div class="actions intro-actions"><a class="secondary" href="https://github.com/oGabrielST/Horizon-2-Save-Editor/releases/latest" target="_blank" rel="noopener">Download for Windows</a><a class="secondary" href="https://github.com/oGabrielST/Horizon-2-Save-Editor#how-to-use" target="_blank" rel="noopener">How to use</a></div></section>
+      <section class="workspace">
+        <div class="step-heading"><div class="step-number">01</div><div><h2>Open a backup</h2><p>Select the extracted <code>player-1</code> folder from Azimuth.</p></div></div>
+        <label class="dropzone" id="dropzone" for="folder-picker" tabindex="0"><input id="folder-picker" type="file" webkitdirectory directory multiple><span class="drop-title">Select or drop your player-1 folder</span><span class="drop-subtitle">All revisions and livery files are preserved.</span><span class="drop-hint">SHA-256 + SQLITE INTEGRITY CHECKED ON OPEN</span></label>
+        <p id="status" class="status" role="status" aria-live="polite">Starting the local database…</p>
+        <div id="loaded-file" class="loaded-file hidden"><div class="loaded-copy"><strong id="loaded-name"></strong><span id="loaded-meta"></span></div><button id="change-file" class="secondary" type="button">Change backup</button></div>
+        <div id="editor" class="hidden">
+          <div class="toolbar"><label>Revision to edit<select id="revision-picker" aria-label="Revision to edit"></select></label><button id="reset-button" class="secondary" type="button">Discard changes</button></div>
+          <p class="notice tested-notice"><strong>User-tested:</strong> car editing, XP and perk unlocks have been reported working. This does not verify every car or combination. Other progression features are experimental and still awaiting in-game testing.</p>
+          <nav class="tabs" aria-label="Editor sections"><button type="button" class="selected" data-tab="profile">Profile</button><button type="button" data-tab="garage">Garage</button><button type="button" data-tab="progress">Progress</button><button type="button" data-tab="advanced">Advanced story</button></nav>
+          <section id="tab-profile" class="tab-panel">
+            <h2>Profile and resources</h2><p class="muted">Change only the values you need. These fields are applied when you export.</p>
+            <div class="field-grid">
+              <label>Credits<input id="credits-input" type="number" min="0" max="2147483647" step="1"></label>
+              <label>Wheelspins<input id="spins-input" type="number" min="0" max="2147483647" step="1"></label>
+              <label>XP <span class="field-note">User-tested</span><input id="xp-input" type="number" min="0" max="2147483647" step="1"></label>
+              <label>Available skill tokens<input id="skills-input" type="number" min="0" max="2147483647" step="1"></label>
+            </div>
+            <p class="muted small">XP editing preserves the stored level field. Direct level editing has been removed. Level progression and rewards are handled by the game.</p>
+          </section>
+          <section id="tab-garage" class="tab-panel hidden">
+            <div class="section-heading"><h2>Garage</h2><span id="garage-count" class="pill"></span></div>
+            <div class="table-scroll"><table><thead><tr><th>Select</th><th>Car</th><th>Class</th><th>Status</th></tr></thead><tbody id="garage-rows"></tbody></table></div>
+            <div class="actions"><button id="current-car-button" type="button" class="secondary">Use selected car</button><button id="duplicate-car-button" type="button" class="secondary">Duplicate selected</button></div>
+            <h3>Add or replace with a stock model</h3>
+            <label>Search catalog<input id="car-search" type="search" placeholder="Make, model, year or ID"></label>
+            <label>Model<select id="car-catalog" size="7" aria-label="Car catalog"></select></label>
+            <p id="car-info" class="muted small"></p>
+            <div class="actions"><button id="add-car-button" type="button" class="primary-button">Add to garage</button><button id="replace-car-button" type="button" class="secondary">Replace selected car</button></div>
+            <p class="muted small">Replace resets the selected car to the new model's stock parts and settings and removes its purchased parts. Duplicate keeps tuning, statistics and existing livery references. Special liveries and additional content may require game files and initialization that have not been verified for every model.</p>
+          </section>
+          <section id="tab-progress" class="tab-panel hidden">
+            <h2>Progress</h2><p class="muted">Perk unlocks are user-tested. Other actions remain experimental; story state, the current championship and installed content can still limit access.</p>
+            <div id="progress-stats" class="metrics"></div>
+            <div class="preset-grid">
+              <article><h3>Mainland destinations <span class="field-note">Experimental</span></h3><p>Adds six destinations to the unlock list. Preserves your current road trip.</p><button type="button" class="secondary" data-preset="destinations">Unlock destinations</button></article>
+              <article><h3>Regular events <span class="field-note">Experimental</span></h3><p>Adds 673 mainland regular events to the unlock list. Does not record wins.</p><button type="button" class="secondary" data-preset="events">Unlock regular events</button></article>
+              <article><h3>Perks <span class="field-note">User-tested</span></h3><p>Adds all 25 known perks to the unlock list.</p><button type="button" class="secondary" data-preset="perks">Unlock perks</button></article>
+              <article><h3>Map discoveries <span class="field-note">Experimental</span></h3><p>Reveals speed traps, zones, challenge slots and boards already represented in this save.</p><button type="button" class="secondary" data-preset="discover">Reveal on map</button></article>
+              <article><h3>Boards <span class="field-note">Experimental</span></h3><p>Marks existing boards as collected. Does not award XP or rewards.</p><button type="button" class="secondary" data-preset="boards">Mark boards collected</button></article>
+              <article><h3>Solo bucket lists <span class="field-note">Experimental</span></h3><p>Records 45 visible mainland challenges as completed. Preserves co-op progress.</p><button type="button" class="secondary" data-preset="buckets">Record challenges completed</button></article>
+              <article class="wide"><h3>Championship history <span class="field-note">Experimental</span></h3><p>Records 168 mainland championships as won in both history tables. Does not end the active championship, grant rewards or complete story scripts.</p><button type="button" class="secondary" data-preset="championships">Record championships won</button></article>
+            </div>
+            <h3>Individual event — experimental</h3><p class="muted small">Includes showcases, finales, introductory events and island content. Adding an unlock does not remove story or content dependencies.</p><label>Search event<input id="event-search" type="search" placeholder="Name or ID"></label><select id="event-catalog" size="5" aria-label="Event catalog"></select><button id="unlock-event-button" class="secondary" type="button">Add selected unlock</button>
+          </section>
+          <section id="tab-advanced" class="tab-panel hidden"><h2>Story state — experimental</h2><p class="notice">Direct editing of existing flags and counters. Incompatible combinations can stop progression. This editor does not know every story transition or guarantee 100% campaign completion.</p><label>Object<select id="story-object"><option>CareerState</option><option>iestate</option></select></label><label>Property<select id="story-property"></select></label><label>New value<input id="story-value" type="text"></label><p id="story-current" class="muted"></p><button id="story-apply" type="button" class="secondary">Apply property to copy</button></section>
+          <section class="review"><h3>Prepared changes</h3><p id="change-summary" class="muted">No changes applied.</p><ul id="change-log"></ul></section>
+          <div class="save-row"><span class="save-note">Your source backup is never overwritten.</span><button id="export-button" type="button" class="primary-button">Export edited copy (.zip)</button></div>
+          <aside class="restore-guide"><span class="guide-icon">03</span><div><strong>Load your edited save</strong><p>Close the game and Azimuth. Back up the active folder, extract the ZIP, then replace <code>data/titles/1A96545B/saves/player-1</code> with the exported <code>player-1</code> folder. Editing <code>saves-backup-*</code> alone does not affect the active save. Restore your backup if a test fails.</p></div></aside>
+        </div>
+      </section>
+    </main><footer><span>HORIZON 2 SAVE EDITOR · v0.3.0</span><a href="README.md">Instructions and limitations</a></footer>
+  </div>
+  <script src="vendor/sql-wasm-inline.js"></script><script src="catalog.js"></script><script src="save-core.js"></script><script src="app.js"></script>
+</body>
+</html>

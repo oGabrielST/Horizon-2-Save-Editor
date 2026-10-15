@@ -1,0 +1,12 @@
+{
+  "name": "fh2-save-studio",
+  "version": "0.3.0",
+  "private": true,
+  "description": "Local Azimuth FH2 save editor; gameplay changes remain experimental",
+  "scripts": {
+    "test": "node --test tests/core.test.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0"
+  }
+}

@@ -1,0 +1,66 @@
+name: Build Windows release
+
+on:
+  push:
+    branches: [master]
+    paths: [package.json, .github/workflows/release.yml]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: windows-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - name: Check source and run unit tests
+        shell: pwsh
+        run: |
+          npm ci --ignore-scripts
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          node --check app.js
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          node --check save-core.js
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          npm test
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Build and verify desktop application
+        shell: pwsh
+        run: |
+          python -m pip install pyinstaller==6.22.3
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python build_windows.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          $report = Join-Path $PWD 'exe-selftest.json'
+          $test = Start-Process -FilePath '.\dist\Horizon 2 Save Editor.exe' -ArgumentList @('--self-test', "`"$report`"") -Wait -PassThru -WindowStyle Hidden
+          if ($test.ExitCode -ne 0) { throw 'Executable self-test failed.' }
+          $result = Get-Content -LiteralPath $report -Raw | ConvertFrom-Json
+          if (-not $result.ok -or -not $result.frozen) { throw 'Invalid executable test report.' }
+          python package_release.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Publish release downloads
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          $version = (Get-Content package.json -Raw | ConvertFrom-Json).version
+          $tag = "v$version"
+          gh release view $tag --json tagName 2>$null
+          if ($LASTEXITCODE -eq 0) {
+            Write-Output "Release $tag already exists; leaving its assets unchanged."
+            exit 0
+          }
+          gh release create $tag 'dist/Horizon.2.Save.Editor.exe' 'dist/Horizon.2.Save.Editor.Source.zip' 'dist/SHA256SUMS.txt' --target $env:GITHUB_SHA --title "Horizon 2 Save Editor $tag" --notes-file RELEASE_NOTES.md --latest
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
