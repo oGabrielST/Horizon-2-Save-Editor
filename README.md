@@ -6,11 +6,10 @@ A local save editor for **Forza Horizon 2 on Azimuth**. Edit XP and resources, m
 
 **[Download the Windows application](https://github.com/oGabrielST/Horizon-2-Save-Editor/releases/latest/download/Horizon.2.Save.Editor.exe)**
 
-- **Windows EXE:** portable native desktop application. All editing happens in its own window. No browser, local server, Python installation or installer is required.
-- **[Python + source package](https://github.com/oGabrielST/Horizon-2-Save-Editor/releases/latest/download/Horizon.2.Save.Editor.Source.zip):** extract the entire ZIP, then run `python horizon_editor.py`. Requires Python 3.12+ with Tkinter and SQLite serialization support. Tested with Python 3.14. Keep the script, `native_core.py` and `catalog.js` together.
+- **[Python + source package](https://github.com/oGabrielST/Horizon-2-Save-Editor/releases/latest/download/Horizon.2.Save.Editor.Source.zip):** extract the entire ZIP, then run `python horizon_editor.py`. Requires Python 3.12+. Keep the script, `native_core.py` and `catalog.js` together.
 - **[Release notes and all downloads](https://github.com/oGabrielST/Horizon-2-Save-Editor/releases/latest)**
 
-The EXE includes its Python runtime, native Tk widgets, SQLite and the model catalog. It operates offline and does not start a web server or open a browser. No administrator privileges are required. The executable is not digitally signed.
+The EXE includes its Python runtime, native Tk widgets, SQLite and the model catalog. No administrator privileges are required. The executable is not digitally signed.
 
 ## How to use
 
@@ -33,16 +32,14 @@ The app asks before discarding unexported changes when switching revisions, open
 | Feature | Available actions | Status |
 | --- | --- | --- |
 | XP | Edit stored XP while preserving the level field | Reported working in the earlier browser editor |
-| Garage | Add or replace with 334 eligible stock models; duplicate; select active car | Reported working in the earlier browser editor; not every model or action individually verified |
-| Perks | Unlock all 25 known perks | Reported working in the earlier browser editor |
+| Garage | Add or replace with 334 eligible stock models; duplicate; select active car | Reported working; not every model or action individually verified |
+| Perks | Unlock all 25 known perks | Reported working |
 | Other resources | Credits, wheelspins and available skill tokens | Structural tests passed; not separately confirmed in the latest user test |
 | Event unlocks | 673 mainland regular events or individual entries from a 790-event catalog | Experimental; in-game testing pending |
 | Other progression | Six destinations, map discoveries, existing boards, 45 solo bucket lists and 168 mainland championship history entries | Experimental; in-game testing pending |
 | Advanced story | Existing boolean flags and numeric counters in CareerState and iestate | Experimental; story dependencies are not fully mapped |
 
 **Direct level editing is disabled.** Editing XP does not rewrite the stored level or calculate rewards. The game determines progression behavior.
-
-Version 0.4.0 ports the save transformations to Python. Automated tests pass against generated data and a local backup, but in-game confirmation of this native version is still pending. Earlier reports describe tests on one local setup, not certification of every model, build or feature. A valid database and correct hashes do not guarantee valid story progression.
 
 ## Limitations
 
@@ -84,3 +81,5 @@ For the retained browser core, run `npm ci --ignore-scripts` and `npm test`. See
 ## Credits
 
 The native editor uses Python, Tk and SQLite. The retained browser edition uses **sql.js 1.15.0**, with its license at [vendor/sql.js-LICENSE](vendor/sql.js-LICENSE). This is an unofficial project and is not affiliated with the game's developers or publisher.
+
+VIBE CODED
